@@ -1,0 +1,19 @@
+
+#root{
+  height: 100vh;
+}
+.container{
+  display: flex;
+  height: 100vh;
+
+}
+.box{
+  display: flex;
+  max-width: 720px;
+  flex-wrap: wrap;
+  gap: 16px !important;
+}
+.input{
+  width: 400px;
+}
+
