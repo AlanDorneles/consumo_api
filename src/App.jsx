@@ -39,6 +39,7 @@ function App() {
           `${apiName}/${nameInput}?localidade=${data.ddd}`
         );
         if (!responseName.ok) {
+  
           throw new Error("Erro ao buscar os dados");
         }
         const dataName = await responseName.json();
