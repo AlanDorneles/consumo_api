@@ -11,6 +11,8 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import "../node_modules/bulma/css/bulma.min.css";
+
+
 function App() {
   const [cepData, setCepData] = useState({});
   const [cepInput, setCepInput] = useState("");
@@ -18,8 +20,10 @@ function App() {
   const [commonNames, setCommonNames] = useState([]);
   const [chartData, setChartData] = useState([]);
   const [cepInputError, setCepInputError] = useState(false);
+  const [nameInputError, setNameInputError]= useState(false)
   const apiCep = "https://viacep.com.br/ws/";
   const apiName = "https://servicodados.ibge.gov.br/api/v2/censos/nomes";
+
 
   const handleSearchClick = async () => {
     try {
@@ -35,6 +39,7 @@ function App() {
           `${apiName}/${nameInput}?localidade=${data.ddd}`
         );
         if (!responseName.ok) {
+  
           throw new Error("Erro ao buscar os dados");
         }
         const dataName = await responseName.json();
@@ -48,7 +53,7 @@ function App() {
             .replace("[", "")
             .replace("[", "")
             .replace(",", " -")
-            .slice(0, 5),
+            ,
           frequencia: item.frequencia,
         }));
         setCommonNames(newData);
@@ -56,9 +61,13 @@ function App() {
         console.log(chartData);
       } else {
         console.error("DDD não encontrado nos dados do CEP");
+        setCepInputError(true);
+        return;
       }
     } catch (error) {
       console.error("Erro:", error);
+      setNameInputError(true)
+
     }
   };
 
@@ -79,7 +88,7 @@ function App() {
               setCepInputError(false);
             }}
           />
-          {cepInputError && <p>CEP deve ter 8 ou 2 dígitos.</p>}
+          {cepInputError && <p>CEP inválido</p>}
         </div>
         <div className="field">
           <label htmlFor="name" className="label">Nome</label>
@@ -91,6 +100,7 @@ function App() {
             value={nameInput}
             onChange={(e) => setNameInput(e.target.value)}
           />
+          {nameInputError && <p>Nome não consta na base de dados</p>}
         </div>
         <button onClick={handleSearchClick} className="button">
           Pesquisar
@@ -103,6 +113,7 @@ function App() {
         <BarChart
           data={chartData}
           margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+          barGap={0}
         >
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="periodo" />
